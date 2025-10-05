@@ -1022,7 +1022,7 @@ function initActions(){
       </tr>`).join('') || `<tr><td colspan="6" style="padding:8px;color:#666">No medicines</td></tr>`;
 
     const logoImg = branding && branding.logoBase64 ? `<img src="${branding.logoBase64}" alt="Clinic Logo" style="height:50px;width:auto">` : '';
-    const clinicTitle = branding && branding.clinicName ? esc(branding.clinicName) : 'Fit Clinic';
+    const clinicTitle = branding && branding.clinicName ? esc(branding.clinicName) : 'Hospital';
     const doctorLine = branding && branding.doctorName ? esc(branding.doctorName) : 'Dr Suneo Honekawa MBBS, MD';
 
     const doc = `
@@ -1206,4 +1206,5 @@ window.__fitClinicDebug = {
   medCount: () => cart.length,
   medListPreview: () => medList.slice(0,20)
 };
+
 
