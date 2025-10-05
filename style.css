@@ -952,27 +952,129 @@ button:focus, input:focus, select:focus, textarea:focus, .rt:focus{ outline:4px 
   }
 }
 
+  /* Modals full-screen style */
+  .modal {
+    width: 95vw !important;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+
+  .modal-body input, .modal-body textarea {
+    font-size: 15px;
+    width: 100%;
+  }
+
+  /* Preview section fix */
+  .preview {
+    margin-top: 16px;
+  }
+
+  /* Buttons comfortable tap targets */
+  .btn, .btn-primary, .btn-outline {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
+
+/* ===============================================
+   MOBILE RESPONSIVENESS — FIT CLINIC RX CLEAN VERSION
+   =============================================== */
+@media (max-width: 900px) {
+  body {
+    padding: 8px;
+    font-size: 15px;
+  }
+
+  .stage {
+    flex-direction: column;
+  }
+
+  .editor, .preview {
+    width: 100% !important;
+    min-width: auto !important;
+    margin: 0;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .brand {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn {
+    flex: 1 1 45%;
+    min-width: 120px;
+  }
+}
+
 @media (max-width: 600px) {
-  .rx-entry, .rx-row-top, .rx-row-mid, .rx-row-btm {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
+  /* Stack medicine entry neatly */
+  .rx-entry, .rx-row1, .rx-row2 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-  .field-compact, .field-medium, .field-small, .field-grow, .field-action {
+
+  .rx-entry input, .rx-entry select, .rx-entry textarea {
+    width: 100% !important;
+    min-width: auto !important;
+    font-size: 15px;
+  }
+
+  .field-compact,
+  .field-medium,
+  .field-small,
+  .field-grow,
+  .field-action {
     width: 100% !important;
   }
-  #medName, #medDosage, #medTimings, #medDays, #medRemarks {
-    width: 100% !important;
-  }
-  .med-table-wrap {
+
+  /* Table scroll for small screens */
+  .med-table-wrap, .table-wrap {
     overflow-x: auto;
   }
-  table.rx-table {
-    width: 100%;
-    min-width: 600px;
+
+  table {
+    min-width: 700px;
+    font-size: 14px;
   }
+
+  /* Modals full-screen style */
   .modal {
-    width: 100% !important;
-    max-width: 95vw;
+    width: 95vw !important;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+
+  .modal-body input, .modal-body textarea {
+    font-size: 15px;
+    width: 100%;
+  }
+
+  /* Preview section fix */
+  .preview {
+    margin-top: 16px;
+  }
+
+  /* Buttons comfortable tap targets */
+  .btn, .btn-primary, .btn-outline {
+    min-height: 44px;
+    font-size: 15px;
   }
 }
