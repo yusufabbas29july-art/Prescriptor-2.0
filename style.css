@@ -922,3 +922,57 @@ button:focus, input:focus, select:focus, textarea:focus, .rt:focus{ outline:4px 
   .id-row{ flex-direction:row; }
   #regenId{ width:160px; }
 }
+/* ===============================================
+   MOBILE RESPONSIVENESS (Fit Clinic Rx)
+   =============================================== */
+@media (max-width: 900px) {
+  body { padding: 8px; }
+  .stage { flex-direction: column; }
+  .editor, .preview {
+    width: 100% !important;
+  }
+  .preview {
+    margin-top: 18px;
+  }
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .brand { flex-wrap: wrap; }
+  .actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  .btn.big {
+    padding: 10px 14px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .rx-entry, .rx-row-top, .rx-row-mid, .rx-row-btm {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .field-compact, .field-medium, .field-small, .field-grow, .field-action {
+    width: 100% !important;
+  }
+  #medName, #medDosage, #medTimings, #medDays, #medRemarks {
+    width: 100% !important;
+  }
+  .med-table-wrap {
+    overflow-x: auto;
+  }
+  table.rx-table {
+    width: 100%;
+    min-width: 600px;
+  }
+  .modal {
+    width: 100% !important;
+    max-width: 95vw;
+  }
+}
