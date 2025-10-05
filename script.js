@@ -458,8 +458,8 @@ function renderPreview(){
       const clinicEl = document.querySelector('.clinic');
       const docEl = document.querySelector('.doc');
       const contactEl = document.querySelector('.pres-head .muted');
-      if(clinicEl) clinicEl.textContent = branding && branding.clinicName ? branding.clinicName : 'Fit Clinic';
-      if(docEl) docEl.textContent = branding && branding.doctorName ? branding.doctorName : 'Dr M. Yusuf Abbas MBBS, MD';
+      if(clinicEl) clinicEl.textContent = branding && branding.clinicName ? branding.clinicName : 'Hospital';
+      if(docEl) docEl.textContent = branding && branding.doctorName ? branding.doctorName : 'Dr Suneo Honekawa, MD';
       if(contactEl) contactEl.textContent = branding && branding.contactLine ? branding.contactLine : 'Regn: XYZ/12345 • +91 9988776655';
     } catch(e){}
 
@@ -580,8 +580,8 @@ function loadAutosave(){
     </tr>`).join('') || `<tr><td colspan="6" style="padding:8px;color:#666">No medicines</td></tr>`;
 
     const logoImg = branding && branding.logoBase64 ? `<img src="${branding.logoBase64}" alt="Clinic Logo" style="height:70px;width:auto">` : `<div style="height:70px;width:90px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#f3f5f8;color:#666;margin-right:12px">LOGO</div>`;
-    const clinicTitle = branding && branding.clinicName ? esc(branding.clinicName) : 'THE FIT CLINIC';
-    const doctorLine = branding && branding.doctorName ? esc(branding.doctorName) : 'Dr M. Yusuf Abbas MBBS, MD';
+    const clinicTitle = branding && branding.clinicName ? esc(branding.clinicName) : 'Hospital';
+    const doctorLine = branding && branding.doctorName ? esc(branding.doctorName) : 'Dr Suneo Honekawa MBBS, MD';
 
     const headerHtml = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -692,10 +692,10 @@ function openBrandingModal(){
   modalBody && (modalBody.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:10px">
       <label>Clinic / Company name
-        <input id="brandingClinic" type="text" value="${esc(b.clinicName || '')}" placeholder="e.g. Fit Clinic" />
+        <input id="brandingClinic" type="text" value="${esc(b.clinicName || '')}" placeholder="e.g. Hospital" />
       </label>
       <label>Doctor / Signature name
-        <input id="brandingDoctor" type="text" value="${esc(b.doctorName || '')}" placeholder="e.g. Dr M. Yusuf Abbas MBBS, MD" />
+        <input id="brandingDoctor" type="text" value="${esc(b.doctorName || '')}" placeholder="e.g. Dr Suneo Honekawa MBBS, MD" />
       </label>
       <label>Contact / registration line
         <input id="brandingContact" type="text" value="${esc(b.contactLine || '')}" placeholder="e.g. Regn: XYZ/12345 • +91 9988776655" />
@@ -1206,5 +1206,6 @@ window.__fitClinicDebug = {
   medCount: () => cart.length,
   medListPreview: () => medList.slice(0,20)
 };
+
 
 
