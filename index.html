@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fit Clinic — Prescription Composer (Revamped)</title>
+
+  <!-- Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Main stylesheet (replace with the large style.css I will supply) -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Meta for better printing -->
+  <meta name="format-detection" content="telephone=no">
+  <meta name="color-scheme" content="light dark">
+</head>
+<body>
+  <div class="wrapper" id="app">
+
+    <header class="topbar" role="banner" aria-label="Top toolbar">
+      <div class="brand" role="img" aria-label="Fit Clinic logo">
+        <div class="logo" aria-hidden="true">FC</div>
+        <div class="brand-text">
+          <h1>Prescriptor 2.0</h1>
+          <p class="subtitle">Made by Abbas</p>
+        </div>
+      </div>
+
+      <div class="actions" role="navigation" aria-label="Toolbar actions">
+        <div class="meta-small" id="currentTime" aria-live="polite">--</div>
+        <button id="saveDraft" class="btn btn-primary big" title="Save draft (Ctrl+S)">Save Draft</button>
+        <button id="exportJson" class="btn btn-outline" title="Export current data">Export JSON</button>
+        <button id="printAll" class="btn btn-gradient" title="Print / Save PDF">Print / Save PDF</button>
+
+        <!-- NEW: Branding & Excel export buttons (minimal additions) -->
+        <button id="brandingBtn" class="btn btn-ghost" title="Change clinic /doctor name and logo">Branding</button>
+        <button id="exportExcel" class="btn btn-ghost" title="Export patients/prescriptions to Excel (CSV)">Export Excel</button>
+      </div>
+    </header>
+
+    <main class="stage" role="main" aria-label="Prescription composer main area">
+
+      <section class="panel editor" aria-label="Editor panel" id="editorPanel">
+        <div class="panel-head">
+          <div>
+            <strong>Editor</strong>
+            <div class="muted">Left: Enter patient data — Right: Live preview & printing</div>
+          </div>
+
+          <div class="panel-head-actions" role="group" aria-label="Editor actions">
+            <button id="newPatient" class="btn btn-ghost" title="Add new patient to local list">New Patient</button>
+            <button id="clearAll" class="btn btn-ghost" title="Clear all fields">Clear</button>
+          </div>
+        </div>
+
+        <div class="editor-scroll" id="editorScroll">
+
+          <div class="card" id="card-patient" aria-labelledby="patientHeading">
+            <h2 id="patientHeading">Patient Details</h2>
+
+            <!-- clearer grid: label above inputs, compact actions on the right -->
+            <div class="patient-grid">
+              <div class="p-field">
+                <label for="name">Name</label>
+                <input id="name" type="text" placeholder="Full name" autocomplete="name" />
+              </div>
+
+              <div class="p-field">
+                <label for="age">Age</label>
+                <input id="age" type="text" inputmode="numeric" placeholder="yrs" />
+              </div>
+
+              <div class="p-field">
+                <label for="gender">Gender</label>
+                <select id="gender" aria-label="Gender select">
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                  <option value="O">Others</option>
+                </select>
+              </div>
+
+              <div class="p-field">
+                <label for="phone">Phone</label>
+                <input id="phone" placeholder="Mobile or landline" inputmode="tel" />
+              </div>
+
+              <div class="p-field id-field">
+                <label for="patientId">Patient ID</label>
+                <div class="id-row">
+                  <input id="patientId" placeholder="(auto if left blank)" />
+                  <button id="regenId" class="btn small" title="Regenerate Patient ID" type="button">Regenerate</button>
+                </div>
+                <div class="small muted id-hint">Format: <code>P-YYYYMMDD-XXXX</code></div>
+              </div>
+
+              <div class="p-field">
+                <label for="date">Visit Date</label>
+                <input id="date" type="date" />
+                <div class="small muted date-hint">Use the calendar or enter date (dd-mm-yyyy)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="card-vitals" aria-labelledby="vitalsHeading">
+            <h2 id="vitalsHeading">Vitals</h2>
+
+            <div class="vitals-grid" role="group" aria-label="Patient vitals">
+              <div class="v-field">
+                <label for="bp">BP</label>
+                <input id="bp" placeholder="120/80 mmHg" />
+              </div>
+
+              <div class="v-field">
+                <label for="pulse">Pulse</label>
+                <input id="pulse" placeholder="bpm" />
+              </div>
+
+              <div class="v-field">
+                <label for="rr">Resp rate</label>
+                <input id="rr" placeholder="/min" />
+              </div>
+
+              <div class="v-field">
+                <label for="temp">Temp (°F)</label>
+                <input id="temp" placeholder="°F" />
+              </div>
+
+              <div class="v-field">
+                <label for="spo2">SpO₂ (%)</label>
+                <input id="spo2" placeholder="%" />
+              </div>
+
+              <div class="v-field">
+                <label for="weight">Weight (kg)</label>
+                <input id="weight" placeholder="kg" inputmode="numeric" />
+              </div>
+
+              <div class="v-field">
+                <label for="height">Height (cm)</label>
+                <input id="height" placeholder="cm" inputmode="numeric" />
+              </div>
+
+              <div class="v-field">
+                <label for="bmi">BMI</label>
+                <input id="bmi" readonly />
+              </div>
+
+              <div class="v-field">
+                <label for="glu">Glucose</label>
+                <input id="glu" placeholder="mg/dL" />
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:12px" role="group" aria-label="Vitals controls">
+              <button id="calcBmi" class="btn btn-primary" title="Calculate BMI from weight and height">Calculate BMI</button>
+              <button id="fillNormal" class="btn btn-outline" title="Fill common normal values">Fill Normal</button>
+              <button id="copyVitals" class="btn btn-gradient" title="Copy vitals into notes area">Copy Vitals → Notes</button>
+            </div>
+          </div>
+
+          <div class="card" id="card-notes" aria-labelledby="notesHeading">
+            <h2 id="notesHeading">Notes Editor (C/o, Observation, Advice, Dx)</h2>
+
+            <p class="muted">Select a field below and use the toolbar to format the text. Bold and paragraph spacing are supported. The fields store HTML-like content so printed output preserves basic formatting.</p>
+
+            <div class="rt-toolbar" role="toolbar" aria-label="Notes formatting toolbar">
+              <button class="rt-btn" data-cmd="bold" title="Bold selected text">B</button>
+              <button class="rt-btn" data-cmd="insertParagraph" title="Insert paragraph spacing">¶</button>
+              <button class="rt-btn" data-cmd="clearFormatting" title="Clear formatting">Clear</button>
+            </div>
+
+            <div class="rt-fields" style="margin-top:12px">
+              <label for="co">C/o — Chief Complaint</label>
+              <div id="co" class="rt" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Chief complaint"></div>
+
+              <label for="observation" style="margin-top:10px">Observation / Exam</label>
+              <div id="observation" class="rt" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Observation"></div>
+
+              <label for="invest" style="margin-top:10px">Investigation / Advice</label>
+              <div id="invest" class="rt" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Investigation and advice"></div>
+
+              <label for="dx" style="margin-top:10px">Diagnosis (Dx)</label>
+              <div id="dx" class="rt" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Diagnosis"></div>
+            </div>
+
+            <div class="small muted" style="margin-top:10px">Tip: Select text and press the Bold button or Ctrl+B. Press ¶ to create paragraph spacing. Clear removes inline formatting while keeping text.</div>
+          </div>
+
+          <div class="card" id="card-rx" aria-labelledby="rxHeading">
+            <h2 id="rxHeading">Rx — Medicines (Structured)</h2>
+
+            <p class="muted">Type medicine name and press Enter or choose from suggestions. Use the Add button to append to the Rx table below.</p>
+
+            <!-- row1 -->
+            <div class="rx-row1" role="group" aria-label="Medicine entry top row">
+              <div class="field-compact">
+                <label class="sr-only" for="medType">Type</label>
+                <select id="medType" aria-label="Medicine type">
+                  <option value="Tab">Tab</option>
+                  <option value="Cap">Cap</option>
+                  <option value="Inj">Inj</option>
+                  <option value="Syrup">Syrup</option>
+                  <option value="Ointment">Ointment</option>
+                  <option value="Cream">Cream</option>
+                  <option value="Drop">Drop</option>
+                  <option value="Inh">Inh</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+
+              <!-- IMPORTANT: positioned wrapper so suggestions anchor under medName.
+                   overflow:visible on wrapper prevents clipping by ancestors -->
+              <div class="field-grow" style="position:relative; overflow:visible;">
+                <label class="sr-only" for="medName">Medicine</label>
+                <input id="medName" placeholder="Medicine (type to search)" aria-label="Medicine name" autocomplete="off" style="width:100%;box-sizing:border-box;">
+
+                <!-- suggestions anchored to input (high z-index so it floats above preview) -->
+                <ul id="medSuggestions" class="suggestions" aria-hidden="true" role="listbox"
+                    style="position:absolute; left:0; top:calc(100% + 6px); right:0; z-index:2147483647; max-height:420px; overflow:auto; box-shadow:0 10px 30px rgba(0,0,0,0.12); background:#fff; border-radius:8px; padding:6px 0; display:none; min-width:280px;">
+                  <!-- JS will populate suggestion items here -->
+                </ul>
+              </div>
+
+              <div class="field-medium">
+                <label class="sr-only" for="medDosage">Dosage</label>
+                <input id="medDosage" placeholder="Dosage (e.g. 500 mg)">
+              </div>
+
+              <div class="field-small">
+                <label class="sr-only" for="medTimings">Timings</label>
+                <input id="medTimings" placeholder="Timings (e.g. 1-0-1)">
+              </div>
+            </div>
+
+            <!-- row2 -->
+            <div class="rx-row2" role="group" aria-label="Medicine entry bottom row" style="margin-top:10px">
+              <div class="field-medium">
+                <label class="sr-only" for="medDays">No. Days</label>
+                <input id="medDays" placeholder="No. Days">
+              </div>
+
+              <!-- REMARKS: textarea (keeps script.js working via .value) -->
+              <div class="field-grow">
+                <label class="sr-only" for="medRemarks">Remarks</label>
+                <textarea id="medRemarks" placeholder="Remarks (e.g. after food, avoid alcohol)"
+                          style="min-height:72px;padding:10px;border:1px solid #e6edf3;border-radius:8px;box-sizing:border-box;width:100%;font-family:inherit;"></textarea>
+              </div>
+
+              <div class="field-action" style="display:flex;align-items:center;justify-content:flex-end">
+                <button id="addMedStructuredBtn" class="btn btn-gradient big" title="Add medicine to Rx">Add to Rx</button>
+              </div>
+            </div>
+
+            <div class="med-table-wrap" style="margin-top:14px" aria-live="polite">
+              <table class="rx-table" id="rxTable" role="table" aria-label="Prescription table">
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader">Sl No.</th>
+                    <th role="columnheader">Type</th>
+                    <th role="columnheader">Medicine</th>
+                    <th role="columnheader">Dosage</th>
+                    <th role="columnheader">Timings</th>
+                    <th role="columnheader">No. Days</th>
+                    <th role="columnheader">Remarks</th>
+                    <th role="columnheader">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="medTableBody" role="rowgroup">
+                </tbody>
+              </table>
+            </div>
+
+            <div class="rx-footer" style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+              <div class="muted">Total medicines: <strong id="medCount">0</strong></div>
+              <div style="display:flex;gap:8px">
+                <button id="clearMedCart" class="btn btn-outline" title="Clear medicine list">Clear</button>
+                <button id="saveMedList" class="btn btn-primary" title="Save Rx">Save Rx</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="card-templates">
+            <h2>Quick Templates</h2>
+            <div class="templates" role="list" aria-label="Quick templates">
+              <button class="btn btn-ghost tpl" data-t="fever">Fever</button>
+              <button class="btn btn-ghost tpl" data-t="cold">Cold</button>
+              <button class="btn btn-ghost tpl" data-t="diab">Diabetes</button>
+              <button class="btn btn-ghost tpl" data-t="htn">HTN</button>
+            </div>
+          </div>
+
+          <div class="card" id="card-extra">
+            <h2>Doctor Notes & Follow-up</h2>
+            <label for="docNotes">Doctor notes</label>
+            <textarea id="docNotes" placeholder="Free text notes for your records"></textarea>
+
+            <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+              <div style="flex:1">
+                <label for="nextVisit">Next visit / Follow-up</label>
+                <input id="nextVisit" type="date">
+              </div>
+              <div style="flex:1">
+                <label for="digitalStamp">Digital stamp (text)</label>
+                <input id="digitalStamp" placeholder="e.g. Dr M. Yusuf Abbas, MBBS, MD">
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="card-history">
+            <h2>History</h2>
+            <p class="muted">Saved prescriptions and patients are stored in your browser's localStorage. Use Export to back them up.</p>
+
+            <div id="historyList" class="card-list">
+              <div class="card card-soft">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:800">John Doe</div>
+                    <div class="small text-muted">P-20251001-AB12 • 01 Oct 2025</div>
+                  </div>
+                  <div>
+                    <button class="btn btn-outline small" onclick="alert('Load demo')">Load</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card card-soft">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:800">Test</div>
+                    <div class="small text-muted">P-20250928-CD34 • 28 Sep 2025</div>
+                  </div>
+                  <div>
+                    <button class="btn btn-outline small" onclick="alert('Load demo')">Load</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:28px" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <aside class="panel preview" aria-label="Preview panel">
+        <div class="preview-inner">
+          <div class="pres-head" style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="clinic">Fit Clinic</div>
+              <div class="doc">Dr M. Yusuf Abbas MBBS, MD</div>
+              <div class="muted">Regn: XYZ/12345 • +91 9988776655</div>
+            </div>
+
+            <div style="text-align:right">
+              <div class="muted" id="pvDate">--</div>
+              <div id="pvName" style="font-weight:800">--</div>
+              <div class="muted" id="pvId">--</div>
+            </div>
+          </div>
+
+          <div class="pv-block"><div class="pv-title">Vitals</div><div id="pvVitals" class="muted">--</div></div>
+          <div class="pv-block"><div class="pv-title">Details</div><div id="pvDetails" class="muted">--</div></div>
+          <div class="pv-block"><div class="pv-title">C/o</div><div id="pvCo" class="muted">--</div></div>
+          <div class="pv-block"><div class="pv-title">Observation</div><div id="pvObs" class="muted">--</div></div>
+          <div class="pv-block"><div class="pv-title">Investigation / Advice</div><div id="pvInvest" class="muted">--</div></div>
+          <div class="pv-block"><div class="pv-title">Diagnosis (Dx)</div><div id="pvDx" class="muted">--</div></div>
+
+          <div class="pv-block">
+            <div class="pv-title">Rx</div>
+            <table id="pvTable" aria-label="Prescription preview">
+              <thead>
+                <tr><th>Medicine</th><th>Dose</th><th>Freq</th><th>Dur</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="pv-footer" style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+            <div class="muted">Signature: ____________________</div>
+            <div class="muted">Printed: <span id="pvPrinted">--</span></div>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+            <button id="downloadPdf" class="btn btn-primary">Download PDF</button>
+            <button id="saveFinal" class="btn btn-outline">Save Final</button>
+          </div>
+
+          <div style="margin-top:20px" class="small muted">
+            <strong>Keyboard:</strong> Ctrl+S save draft • Ctrl+P print. Use Up/Down inside suggestion list to navigate and Enter to select.
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer style="margin-top:18px;text-align:center;font-size:13px;color:#6b7280">
+      Prescriptor 2.0 • Built by Abbas •
+    </footer>
+  </div>
+
+  <datalist id="meds-sample">
+    <option value="Amoxicillin 500 mg"></option>
+    <option value="Paracetamol 500 mg"></option>
+    <option value="Cetirizine 10 mg"></option>
+    <option value="Metformin 500 mg"></option>
+    <option value="Amlodipine 5 mg"></option>
+    <option value="Omeprazole 20 mg"></option>
+    <option value="Azithromycin 250 mg"></option>
+    <option value="Salbutamol inhaler"></option>
+    <option value="Ibuprofen 400 mg"></option>
+    <option value="Ranitidine 150 mg"></option>
+  </datalist>
+
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" style="display:none">
+    <div class="modal" role="document">
+      <div class="modal-header">
+        <strong id="modalTitle">Confirm</strong>
+        <button class="btn btn-ghost" id="modalClose">✕</button>
+      </div>
+      <div id="modalBody" style="margin-top:8px">Are you sure?</div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-outline" id="modalCancel">Cancel</button>
+        <button class="btn btn-danger" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" style="display:none">Saved</div>
+
+  <!-- NEW: Branding modal (hidden). JS will toggle #brandingModal and handle file->base64 if needed -->
+  <div id="brandingModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" style="display:none">
+    <div class="modal" role="document" style="max-width:520px">
+      <div class="modal-header">
+        <strong id="brandingTitle">Branding</strong>
+        <button class="btn btn-ghost" id="brandingClose">✕</button>
+      </div>
+      <div id="brandingBody" style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+        <label for="brandingClinic">Clinic / Company name</label>
+        <input id="brandingClinic" placeholder="Fit Clinic" />
+
+        <label for="brandingDoctor">Doctor name</label>
+        <input id="brandingDoctor" placeholder="Dr M. Yusuf Abbas MBBS, MD" />
+
+        <label for="brandingLogo">Logo (PNG / JPG)</label>
+        <input id="brandingLogo" type="file" accept="image/*" />
+
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="flex:1">
+            <small class="muted">Preview</small>
+            <div id="brandingPreview" style="height:64px;width:160px;border:1px dashed #ddd;display:flex;align-items:center;justify-content:center;background:#fff;margin-top:6px">No logo</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button id="brandingSave" class="btn btn-primary">Save</button>
+            <button id="brandingCancel" class="btn btn-outline">Cancel</button>
+          </div>
+        </div>
+
+        <!-- placeholder to store data for script -- JS can use this hidden input to persist base64 or filename -->
+        <input type="hidden" id="brandingLogoData" value="">
+      </div>
+    </div>
+  </div>
+
+  <!-- include your large meds dataset (must set window.meds_10000) -->
+  <script src="meds_all_combined.js"></script>
+
+  <!-- jsDelivr (uses package's latest published distribution) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- or unpkg (similar) -->
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+  <!-- main logic (must come after meds file; only one include) -->
+  <script src="script.js"></script>
+</body>
+</html>

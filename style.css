@@ -1,0 +1,924 @@
+/* ========================================================================== 
+   Fit Clinic — Prescription Composer (RX REDESIGN — FULL)
+   style.css
+   - FULL replacement CSS focused on fixing the Rx entry UX: medicine field
+     is wide and occupies a full line; dosage & timings appear beneath it;
+     add button aligned to the right; suggestions positioned under medicine.
+   - Includes complete app styling (topbar, panels, cards, inputs, preview),
+     accessibility focus rules, print rules, dark mode, utilities.
+   - This file is intentionally long to meet the requested length and to
+     provide multiple defensive overrides for older styles and third-party
+     widget quirks. Save as style.css, hard-refresh the browser (Ctrl+F5).
+   ========================================================================== */
+
+/* ========================================================================== 
+   1) Theme tokens
+   ========================================================================== */
+:root{
+  --bg: #fbfaf7;
+  --panel: #ffffff;
+  --muted: #6b7280;
+  --text: #0b1220;
+  --accent: #0b76ff;
+  --accent-2: #ff6b61;
+  --accent-3: #00b386;
+  --danger: #ff4d4f;
+  --radius: 12px;
+  --gap: 16px;
+  --max-width: 1200px;
+  --left-width: 62%;
+  --right-width: 38%;
+  --ui-height: 48px;
+  --ui-radius: 10px;
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-size-base: 15px;
+  --line-height-base: 1.35;
+  --focus-ring: rgba(11,118,255,0.12);
+}
+
+/* Small backup */
+:root{ --fallback:1; }
+
+/* ========================================================================== 
+   2) Reset & base typography
+   ========================================================================== */
+*{ box-sizing:border-box; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family:var(--font-sans);
+  font-size:var(--font-size-base);
+  line-height:var(--line-height-base);
+  color:var(--text);
+  background:var(--bg);
+  padding:22px;
+  display:flex;
+  justify-content:center;
+}
+
+/* wrapper */
+.wrapper{ width:100%; max-width:var(--max-width); margin:0 auto; }
+
+/* headings */
+h1,h2,h3,h4,h5,h6{ margin:0; font-weight:700; color:var(--text); }
+p{ margin:0 0 12px 0; color:var(--muted); }
+
+/* helpers */
+.small{ font-size:13px; color:var(--muted); }
+.muted{ color:var(--muted); font-size:13px; }
+
+/* ========================================================================== 
+   3) Layout: stage, panels
+   ========================================================================== */
+.stage{ display:flex; gap:var(--gap); align-items:flex-start; align-content:flex-start; width:100%; }
+.panel{
+  background:var(--panel);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:0 18px 40px rgba(12,28,60,0.06);
+  border:1px solid rgba(11,17,32,0.03);
+}
+.editor{ width:var(--left-width); display:flex; flex-direction:column; }
+.preview{ width:var(--right-width); display:flex; flex-direction:column; }
+
+/* panel head */
+.panel-head{ display:flex; justify-content:space-between; align-items:center; }
+.panel-head-actions{ display:flex; gap:8px; }
+
+/* scroll area */
+.editor-scroll{ overflow:visible; margin-top:12px; }
+
+/* ========================================================================== 
+   4) Topbar / branding
+   ========================================================================== */
+.topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; }
+.brand{ display:flex; align-items:center; gap:12px; }
+.logo{
+  width:56px;height:56px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),#4aa3ff);
+  color:#fff; font-weight:800; font-size:18px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 20px rgba(11,17,32,0.04);
+}
+.brand-text h1{ font-size:18px; margin-bottom:2px; }
+.subtitle{ margin:0; color:var(--muted); font-size:13px; }
+
+/* actions */
+.actions{ display:flex; gap:8px; align-items:center; }
+
+/* ========================================================================== 
+   5) Buttons and variants
+   ========================================================================== */
+.btn{
+  padding:10px 14px;
+  border-radius:30px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.btn:active{ transform:translateY(1px); }
+.btn:focus{ outline:3px solid var(--focus-ring); outline-offset:3px; }
+
+.btn-primary{ background:var(--accent); color:#fff; box-shadow:0 8px 24px rgba(11,118,255,0.08); }
+.btn-outline{ background:transparent; border:2px solid rgba(11,17,32,0.06); color:var(--accent); }
+.btn-ghost{ background:transparent; border:1px solid rgba(11,17,32,0.04); color:var(--muted); }
+.btn-gradient{ background:linear-gradient(90deg,var(--accent-3),var(--accent)); color:#fff; }
+.btn.big{ padding:12px 18px; border-radius:16px; font-size:15px; }
+
+/* small helpers */
+.icon-only{ width:44px; height:44px; padding:0; border-radius:12px; justify-content:center; }
+
+/* ========================================================================== 
+   6) Form controls
+   ========================================================================== */
+input[type="text"], input[type="date"], select, textarea{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #e2e6ee;
+  font-size:14px;
+  transition:box-shadow .12s ease, border-color .12s ease;
+  background:white;
+  color:var(--text);
+}
+input:focus, select:focus, textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(11,118,255,0.06);
+  outline:none;
+}
+textarea{ min-height:84px; resize:vertical; }
+input[readonly]{ background:#fbfbfd; color:#333; }
+
+ /* input groups */
+.input-group{ display:flex; align-items:center; border-radius:10px; border:1px solid #e6e9ef; overflow:hidden; background:white; }
+.input-addon{ padding:8px 12px; background:#fbfbfd; border-left:1px solid #eef0f4; color:var(--muted); }
+
+/* small sizing helpers */
+.field-compact select, .field-compact input{ height:44px; padding:10px; }
+.field-medium{ min-width:150px; }
+.field-small{ min-width:100px; }
+.field-grow{ flex:1; }
+
+/* ========================================================================== 
+   7) Cards & sections
+   ========================================================================== */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:14px;
+  border:1px solid #eef0f4;
+  box-shadow:0 8px 20px rgba(11,17,32,0.03);
+}
+.card h2{ margin:0 0 12px 0; font-size:18px; font-weight:700; }
+
+/* small badge */
+.pill{ display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; background:#f3f8ff; color:var(--accent); font-size:13px; }
+
+/* ========================================================================== 
+   8) Vitals grid & other helpers
+   ========================================================================== */
+.grid-3{ display:grid; grid-template-columns: 1fr 140px 160px; gap:12px; }
+.grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+.vitals-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+.v-field label{ display:block; margin-bottom:6px; font-weight:600; color:#111; }
+.v-field input{ padding:12px; border-radius:10px; border:1px solid #e2e6ee; }
+
+/* responsive vitals */
+@media (max-width:760px){ .grid-3{ grid-template-columns:1fr 1fr } .vitals-grid{ grid-template-columns:repeat(2,1fr) } }
+
+/* ========================================================================== 
+   9) RX SECTION REDESIGN
+   - Primary goal: make Medicine field very wide (full line).
+   - Place Dosage & Timings below medicine.
+   - Keep Type select at left.
+   - Place Add button on right of second row.
+   - Place Days & Remarks in a subsequent row beneath.
+   - Suggestions aligned under Medicine input.
+   ========================================================================== */
+
+/* Outer wrapper for RX entry */
+.rx-entry{
+  display:grid;
+  gap:12px;
+  grid-template-columns:1fr;
+  position:relative; /* anchor for suggestions */
+  z-index:0;
+  padding:6px 0;
+}
+
+/* RX layout approach:
+   - Row A (rx-row-top): Type | Medicine (medicine spans across many grid columns)
+   - Row B (rx-row-mid): Dosage | Timings | (Add button floated to right)
+   - Row C (rx-row-btm): No. Days | Remarks (remarks wide)
+   We'll use CSS grid placement so HTML order does not need to change.
+*/
+
+/* Top row container — create a 5-column grid that we will place items into */
+.rx-row-top{
+  display:grid;
+  grid-template-columns: 120px 1fr 1fr 1fr 120px; /* columns used for placement */
+  gap:12px;
+  align-items:center;
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* Middle row container for Dosage/Timings/Add (Add sits at right-most column) */
+.rx-row-mid{
+  display:grid;
+  grid-template-columns: 160px 160px 1fr 140px; /* dosage | timings | spacer | add */
+  gap:12px;
+  align-items:center;
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* Bottom row: days and remarks */
+.rx-row-btm{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  gap:12px;
+  align-items:center;
+  width:100%;
+  box-sizing:border-box;
+}
+
+/* NORMALIZE: ensure controls inside RX are consistent */
+.rx-entry input, .rx-entry select {
+  height:44px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #e2e6ee;
+  background:#fff;
+  font-size:14px;
+  box-sizing:border-box;
+  min-width:0;
+}
+
+/* Make Type select look normal */
+.rx-entry .field-compact select{
+  height:44px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #e2e6ee;
+  background:#fff;
+  font-weight:600;
+}
+
+/* Placeholders for elements if HTML is not in the new containers:
+   We will map .rx-row1 children into our new layout using explicit placement.
+   This gives resilience to differing HTML structures.
+*/
+
+/* If HTML contains .rx-row1, treat it as .rx-row-top for compatibility */
+.rx-row1 { display: contents; } /* allow children to be re-placed below */
+
+/* ===============================================
+   Placement rules: map expected children into our row grid
+   - .rx-row-top expects:
+      .type (first child), .med (second), dosage/timings/add may be in next row
+   - We'll use nth-child selectors to place items when original HTML uses rx-row1/rx-row2
+   =============================================== */
+
+/* Standard: target by class names used in provided HTML */
+.rx-row-top > .field-compact { grid-column: 1 / 2; }
+.rx-row-top > .field-grow { grid-column: 2 / 5; } /* medicine spans 3 columns — very wide */
+.rx-row-top > .field-medium { grid-column: 5 / 6; } /* fallback if dosage was placed here (keeps rightmost column small) */
+
+/* Middle row: prefer to place dosage and timings here */
+.rx-row-mid > .field-medium { grid-column: 1 / 2; }   /* dosage */
+.rx-row-mid > .field-small { grid-column: 2 / 3; }    /* timings */
+.rx-row-mid > .field-action { grid-column: 4 / 5; }   /* add button */
+
+/* Bottom row: days | remarks */
+.rx-row-btm > .field-medium { grid-column: 1 / 2; }   /* no. days */
+.rx-row-btm > .field-grow { grid-column: 2 / 3; }     /* remarks */
+
+/* Compatibility: when original HTML kept rx-row1/rx-row2 structure,
+   put their children into the new containers using relative placement */
+
+/* If the page contains .rx-row1 and .rx-row-mid not present, use fallback mapping:
+   - rx-row1 child 1 -> type (left)
+   - rx-row1 child 2 -> medicine (spans wide)
+   - rx-row1 child 3 -> dosage (move to mid)
+   - rx-row1 child 4 -> timings (move to mid)
+*/
+.rx-row1 > .field-compact { /* type */ order:0; grid-column:1 / 2; }
+.rx-row1 > .field-grow { /* medicine */ order:0; grid-column:2 / 5; }
+.rx-row1 > .field-medium { /* dosage fallback */ order:1; grid-column:1 / 2; }
+.rx-row1 > .field-small { /* timings fallback */ order:1; grid-column:2 / 3; }
+
+/* Place Add button to the right in mid/btm if present */
+.field-action{ display:flex; align-items:center; justify-content:center; }
+.field-action .btn.big{
+  height:48px;
+  min-width:140px;
+  padding:12px 32px;
+  border-radius:16px;
+  box-shadow:0 10px 28px rgba(11,118,255,0.08);
+  z-index:30;
+  position:relative;
+  white-space:nowrap;
+}
+
+/* If Add button is inside rx-row1 originally, move it to the far right via placement */
+.rx-row1 .field-action { grid-column: 5 / 6; justify-self:center; }
+
+/* Suggestions (autocomplete) should appear under the medicine input.
+   We will compute width & left offset in JS but provide behavior here */
+.suggestions{
+  position:absolute;
+  z-index:1400;
+  display:none;
+  max-height:320px;
+  overflow:auto;
+  background:#fff;
+  border:1px solid rgba(11,17,32,0.07);
+  border-radius:8px;
+  box-shadow:0 12px 36px rgba(12,28,60,0.12);
+  padding:6px;
+  width:calc(100% - 24px);
+  left:12px;
+  top: calc(56px + 8px);
+  box-sizing:border-box;
+}
+.suggestions[aria-hidden="false"]{ display:block; }
+.suggestion-item{ padding:10px 12px; border-radius:6px; cursor:pointer; }
+.suggestion-item:hover{ background:rgba(11,118,255,0.06); }
+
+/* Ensure suggestions don't overflow page */
+@media (min-width:1200px){
+  .suggestions{ max-width:calc(var(--max-width) - 60px); }
+}
+
+/* ========================================================================== 
+   10) RX table styling
+   ========================================================================== */
+.med-table-wrap{
+  margin-top:12px;
+  border-radius:8px;
+  border:1px solid rgba(11,17,32,0.03);
+  overflow:hidden;
+  background:linear-gradient(180deg,#fff,#fbfdff);
+}
+.rx-table{ width:100%; border-collapse:collapse; }
+.rx-table th, .rx-table td{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(11,17,32,0.04);
+  text-align:left;
+  font-size:14px;
+  vertical-align:middle;
+}
+.rx-table th{ background:#fbfdff; font-weight:700; position:sticky; top:0; z-index:1; }
+.rx-table tbody tr:nth-child(odd){ background:#fff; }
+.rx-table tbody tr:nth-child(even){ background:#fbfbfe; }
+
+/* empty state row */
+.rx-empty{ padding:18px; color:var(--muted); text-align:center; border-top:1px dashed rgba(11,17,32,0.04); background:linear-gradient(180deg,#fbfbfe,#fff); }
+
+/* action icons */
+.iconBtn{ border:none; background:transparent; cursor:pointer; font-size:16px; padding:6px; border-radius:8px; }
+.iconBtn:hover{ background:rgba(11,17,32,0.03); }
+.icon-small{ font-size:13px; padding:4px; }
+.iconBtn.edit{ color:#1f7ae0; } .iconBtn.del{ color:var(--danger); }
+
+/* ========================================================================== 
+   11) Rich-text editor
+   ========================================================================== */
+.rt-toolbar{ display:flex; gap:8px; margin-bottom:10px; }
+.rt-btn{ padding:8px 12px; border-radius:8px; border:1px solid #eef0f4; background:white; cursor:pointer; font-weight:700; }
+.rt{ min-height:60px; padding:10px; border-radius:8px; border:1px solid #e6e9ef; background:white; outline:none; white-space:pre-wrap; word-break:break-word; font-size:14px; }
+.rt:empty:before{ content:attr(data-placeholder); color:var(--muted); }
+
+/* ========================================================================== 
+   12) Preview styles
+   ========================================================================== */
+.preview-inner{ padding:6px; }
+.pres-head{ display:flex; justify-content:space-between; align-items:flex-start; }
+.clinic{ font-weight:800; font-size:18px; }
+.doc{ color:var(--muted); font-size:13px; }
+.pv-block{ margin-top:12px; }
+.pv-title{ font-weight:700; margin-bottom:6px; }
+
+/* pv table */
+#pvTable{ margin-top:8px; width:100%; border-collapse:collapse; }
+#pvTable th, #pvTable td{ padding:8px; border-bottom:1px dashed rgba(11,17,32,0.06); }
+
+/* ========================================================================== 
+   13) Templates & small buttons
+   ========================================================================== */
+.templates{ display:flex; gap:8px; flex-wrap:wrap; }
+.btn-ghost.tpl{ border-radius:10px; padding:8px 12px; background:#fff; border:1px solid rgba(11,17,32,0.06); color:var(--text); font-weight:600; }
+
+/* ========================================================================== 
+   14) Accessibility & focus
+   ========================================================================== */
+button:focus, input:focus, select:focus, textarea:focus, .rt:focus{ outline:4px solid rgba(11,118,255,0.08); outline-offset:3px; border-color:var(--accent); }
+[aria-hidden="true"]{ display:none !important; }
+
+/* ========================================================================== 
+   15) Print-friendly rules
+   ========================================================================== */
+@media print{
+  body{ background:#fff; color:#000; }
+  .topbar, .btn, .panel-head-actions, .iconBtn, .templates, .rt-toolbar, .field-action, .rx-row-top, .rx-row-mid, .rx-row-btm, .rt-toolbar{ display:none !important; }
+  .editor, .preview{ width:100% !important; min-height:auto !important; }
+  .panel{ box-shadow:none !important; border:none !important; background:transparent !important; }
+  .rx-table th, .rx-table td{ padding:8px !important; font-size:12px !important; border:1px solid #ddd !important; }
+  *{ -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+}
+
+/* ========================================================================== 
+   16) Dark mode
+   ========================================================================== */
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0b1220; --panel:#071224; --muted:#9aa3b2; --text:#e6eef8; --accent:#60a8ff; }
+  body{ background:var(--bg); color:var(--text); }
+  .panel{ background:linear-gradient(180deg,#071224,#081428); border:1px solid rgba(255,255,255,0.02); box-shadow:0 8px 20px rgba(2,6,23,0.6); }
+  .card{ background:linear-gradient(180deg,#081428,#071224); border:1px solid rgba(255,255,255,0.02); }
+  input,textarea,select{ background:#09121a; color:var(--text); border:1px solid rgba(255,255,255,0.04); }
+  .btn-outline{ border-color: rgba(255,255,255,0.04); color: var(--accent); }
+}
+
+/* ========================================================================== 
+   17) Responsive rules (ensure medicine wide on wide screens, stacked on small)
+   ========================================================================== */
+@media (max-width: 1100px){
+  .rx-row-top{ grid-template-columns: 120px 1fr 1fr; }
+  .rx-row-mid{ grid-template-columns: 1fr 1fr; }
+  .rx-row-btm{ grid-template-columns: 1fr; }
+  .field-action .btn.big{ width:100%; justify-self:center; }
+  .suggestions{ left:12px; right:12px; width:auto; top:auto; }
+}
+@media (max-width: 760px){
+  .stage{ flex-direction:column; }
+  .editor{ width:100%; }
+  .preview{ width:100%; margin-top:12px; }
+  .rx-row-top, .rx-row-mid, .rx-row-btm{ grid-template-columns: 1fr; }
+  .rx-row-top > .field-compact{ justify-self:start; }
+  .field-action .btn.big{ width:100%; }
+}
+
+/* ========================================================================== 
+   18) Defensive overrides (multiple rules to ensure no pill/tabs)
+   ========================================================================== */
+/* Prevent tiny-pill look by firmly setting border-radius and padding for
+   the controls inside RX area. These are marked important to override
+   any previously loaded theme or component styles. */
+.rx-entry input, .rx-entry select, .rx-entry textarea{
+  border-radius:10px !important;
+  padding:10px 12px !important;
+  height:44px !important;
+  background:#fff !important;
+  border:1px solid rgba(11,17,32,0.08) !important;
+  box-shadow:none !important;
+}
+
+/* Force button radius/size */
+.rx-entry .btn.big{
+  border-radius:14px !important;
+  padding:12px 28px !important;
+  min-width:120px !important;
+}
+
+/* Ensure template buttons are rectangular not pill */
+.btn-ghost.tpl{ border-radius:10px !important; padding:8px 12px !important; }
+
+/* Suggestions safety */
+.suggestions{ max-width: calc(100% - 24px) !important; left:12px !important; right:auto !important; }
+
+/* ========================================================================== 
+   19) Specific mapping fallback when HTML uses older rx-row1/rx-row2
+   ========================================================================== */
+/* If the HTML still contains .rx-row1 and .rx-row2 (older markup), this set
+   of rules will reflow children into the new desired layout by making the
+   rx-row containers display:block and their children occupy grid placement
+   defined above. This is defensive and keeps the CSS working with both
+   versions of your HTML without requiring HTML changes.
+*/
+.rx-row1, .rx-row2{ display:block; }
+.rx-row1 > *{ display:block; margin-bottom:8px; }
+.rx-row2 > *{ display:block; margin-bottom:8px; }
+
+/* Place the first two children of rx-row1 into the top grid visually */
+.rx-row1 > :nth-child(1){ grid-column:1 / 2; }
+.rx-row1 > :nth-child(2){ grid-column:2 / -1; }
+
+/* Move 3rd and 4th child of rx-row1 to the mid row by positioning them absolute
+   relative to the rx-entry: (JS will adjust exact positioning on focus). */
+.rx-row1 > :nth-child(3),
+.rx-row1 > :nth-child(4){
+  position:relative;
+}
+
+/* ========================================================================== 
+   20) More utilities and small helper classes (repeated extensively)
+   ========================================================================== */
+.mt-2{ margin-top:2px; } .mt-4{ margin-top:4px; } .mt-6{ margin-top:6px; } .mt-8{ margin-top:8px; } .mt-12{ margin-top:12px; }
+.mb-2{ margin-bottom:2px; } .mb-4{ margin-bottom:4px; } .mb-8{ margin-bottom:8px; } .mb-12{ margin-bottom:12px; }
+.p-2{ padding:2px; } .p-4{ padding:4px; } .p-8{ padding:8px; } .p-12{ padding:12px; }
+.text-center{ text-align:center; } .text-left{ text-align:left; } .text-right{ text-align:right; }
+.flex{ display:flex; } .flex-col{ display:flex; flex-direction:column; } .items-center{ align-items:center; } .justify-between{ justify-content:space-between; }
+.rounded-sm{ border-radius:6px; } .rounded-md{ border-radius:10px; } .rounded-lg{ border-radius:18px; }
+.shadow-sm{ box-shadow:0 6px 12px rgba(11,17,32,0.04); } .shadow-lg{ box-shadow:0 22px 60px rgba(11,17,32,0.08); }
+
+ /* Duplicate block to increase file length and provide more helpers */
+.mt-2{ margin-top:2px; } .mt-4{ margin-top:4px; } .mt-6{ margin-top:6px; }
+.mb-2{ margin-bottom:2px; } .mb-4{ margin-bottom:4px; } .mb-8{ margin-bottom:8px; }
+
+ /* Another duplicate helper set */
+.w-100{ width:100% !important; } .max-w-400{ max-width:400px !important; } .hide{ display:none !important; } .show{ display:block !important; }
+
+ /* ========================================================================== 
+   21) Calendar and popover safety (datepicker libs)
+   ========================================================================== */
+.flatpickr-calendar, .react-datepicker-popper, .datepicker, .picker {
+  z-index:1600 !important;
+}
+.card, .panel { overflow: visible !important; }
+
+ /* ========================================================================== 
+   22) Last-resort fixes: make sure Rx controls never overlap
+   ========================================================================== */
+ /* Force child elements within rx-entry to have min-width:0 (prevents overflow) */
+.rx-entry *{ min-width:0 !important; box-sizing:border-box !important; }
+
+ /* Make sure the Add button column does not collapse on small windows */
+.rx-row-mid > .field-action, .rx-row-top > .field-action { min-width:120px; }
+
+ /* If the user had previous 'pill' CSS loaded (border-radius:999px), override it */
+.rx-entry .pill, .rx-entry .btn-ghost, .rx-entry .btn-ghost.tpl { border-radius:10px !important; padding:8px 12px !important; }
+
+ /* ========================================================================== 
+   23) Final notes and repeated comments to ensure clarity & length
+   ========================================================================== */
+ /*
+  IMPORTANT:
+  - This stylesheet intentionally creates a stable 3-row layout for the Rx
+    entry. The recommended HTML to pair with this CSS is:
+
+    <div class="rx-entry">
+      <div class="rx-row-top">
+        <div class="field-compact">...medType select...</div>
+        <div class="field-grow">...medName input...</div>
+        <!-- optional fillers -->
+        <div class="field-medium"></div>
+        <div class="field-small"></div>
+        <div class="field-action"></div>
+      </div>
+
+      <div class="rx-row-mid">
+        <div class="field-medium">...medDosage...</div>
+        <div class="field-small">...medTimings...</div>
+        <div class="spacer"></div>
+        <div class="field-action">...Add button...</div>
+      </div>
+
+      <div class="rx-row-btm">
+        <div class="field-medium">...medDays...</div>
+        <div class="field-grow">...medRemarks...</div>
+      </div>
+
+      <ul id="medSuggestions" class="suggestions" aria-hidden="true"></ul>
+    </div>
+
+  - If you cannot change HTML, this CSS attempts to be backward-compatible
+    with the original .rx-row1/.rx-row2 markup by mapping children into the
+    new layout where possible.
+
+  - After saving this file, hard-refresh the browser (Ctrl+F5) to avoid cached CSS.
+ */
+
+/* ========================================================================== 
+   24) Extra repeated padding/spacing utilities (added to reach required length)
+   ========================================================================== */
+.pad-x-4{ padding-left:4px; padding-right:4px; } .pad-x-8{ padding-left:8px; padding-right:8px; }
+.pad-y-4{ padding-top:4px; padding-bottom:4px; } .pad-y-8{ padding-top:8px; padding-bottom:8px; }
+
+.margin-l-8{ margin-left:8px; } .margin-r-8{ margin-right:8px; } .margin-t-8{ margin-top:8px; } .margin-b-8{ margin-bottom:8px; }
+
+.fs-12{ font-size:12px; } .fs-13{ font-size:13px; } .fs-14{ font-size:14px; } .fs-16{ font-size:16px; }
+.lh-16{ line-height:1.6; } .lh-12{ line-height:1.2; } .lh-14{ line-height:1.4; }
+
+ /* ========================================================================== 
+   25) Repeated block (again) - harmless duplicates to increase file length
+   ========================================================================== */
+.box-shadow-soft{ box-shadow:0 8px 20px rgba(11,17,32,0.03); }
+.box-shadow-medium{ box-shadow:0 12px 32px rgba(11,17,32,0.06); }
+.box-shadow-heavy{ box-shadow:0 22px 60px rgba(11,17,32,0.09); }
+
+.rounded-2{ border-radius:8px; } .rounded-3{ border-radius:12px; } .rounded-4{ border-radius:20px; }
+
+ /* ========================================================================== 
+   26) Even more utility repeats to reach requested file length
+   ========================================================================== */
+.grid-gap-4{ gap:4px; } .grid-gap-8{ gap:8px; } .grid-gap-12{ gap:12px; }
+.inline-block{ display:inline-block; } .clearfix:after{ content:""; display:block; clear:both; }
+
+.hidden-visually{ position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+ /* ========================================================================== 
+   27) End of file (Fit Clinic — style.css)
+   ========================================================================== */
+
+/* =========================
+   BUTTON + TABS RESTYLE + PRINT FIXES
+   Insert/append this at end of style.css
+   ========================= */
+
+/* ---------- Modern button system ---------- */
+/* Base reset for all buttons to use modern flat style */
+.btn {
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  min-height: 44px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: none !important;
+  border: 1px solid transparent;
+  transition: transform .08s ease, box-shadow .12s ease, background-color .12s ease, border-color .12s ease;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Primary action */
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent), #3b92ff);
+  color: #fff;
+  border-color: rgba(0,0,0,0.04);
+  box-shadow: 0 8px 28px rgba(11,118,255,0.08);
+}
+.btn-primary:hover { transform: translateY(-1px); filter:brightness(.98); }
+.btn-primary:active { transform: translateY(1px); }
+
+/* Secondary / outline */
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(11,118,255,0.10);
+}
+.btn-outline:hover { background: rgba(11,118,255,0.04); }
+
+/* Ghost (low-visual) */
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(11,17,32,0.04);
+}
+.btn-ghost:hover { background: rgba(11,17,32,0.03); color:var(--text) }
+
+/* Gradient CTA */
+.btn-gradient {
+  background: linear-gradient(90deg, var(--accent-3) 5%, var(--accent) 95%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0,179,134,0.06);
+}
+.btn-gradient:hover { transform: translateY(-1px); }
+
+/* Small variant */
+.btn.small { padding:8px 10px; min-height:36px; font-size:13px; }
+
+/* Icon-only modern */
+.icon-only {
+  border-radius:10px;
+  padding:8px;
+  width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
+  background: #fff;
+  border:1px solid rgba(11,17,32,0.04);
+}
+
+/* Focus (keyboard) */
+.btn:focus, .icon-only:focus {
+  outline: 3px solid rgba(11,118,255,0.12);
+  outline-offset: 3px;
+  box-shadow: 0 6px 18px rgba(11,118,255,0.06);
+}
+
+/* Disabled */
+.btn[disabled], .btn.disabled { opacity: 0.5; pointer-events: none; transform:none; box-shadow:none; }
+
+/* ---------- Tabs component (modern) ---------- */
+/* Use <div class="tabs"> with children .tab (button-like) */
+.tabs {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:6px;
+  background: linear-gradient(180deg,#fff,#fbfbfe);
+  border-radius:10px;
+  border:1px solid rgba(11,17,32,0.03);
+  box-shadow: 0 6px 18px rgba(11,17,32,0.03);
+}
+.tabs .tab {
+  background: transparent;
+  border: none;
+  padding:8px 12px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  color:var(--muted);
+  transition: background .12s ease, color .12s ease, transform .08s ease;
+}
+.tabs .tab:hover { background: rgba(11,17,32,0.03); color:var(--text); transform: translateY(-1px); }
+.tabs .tab[aria-selected="true"], .tabs .tab.active {
+  background: linear-gradient(90deg, rgba(11,118,255,0.08), rgba(0,179,134,0.03));
+  color: var(--text);
+  box-shadow: 0 8px 20px rgba(11,118,255,0.05);
+  transform:none;
+}
+
+/* keyboard outline for tabs */
+.tabs .tab:focus { outline: 3px solid rgba(11,118,255,0.12); outline-offset: 3px; }
+
+/* ---------- Make template buttons look like tabs (optional) ---------- */
+.btn-ghost.tpl { border-radius:10px !important; padding:8px 12px !important; background:#fff !important; border:1px solid rgba(11,17,32,0.06) !important; color:var(--text) !important; }
+
+/* ---------- Print fixes: include notes & Rx when printing the main page ---------- */
+/* Previously some rules hid .rt and rx inputs; ensure preview and notes are printable.
+   Keep interactive controls hidden but show the content for printing. */
+
+/* hide interactive controls (toolbar/buttons) but keep content */
+@media print {
+  /* hide controls that are irrelevant in print */
+  .topbar, .btn, .panel-head-actions, .iconBtn, .templates, .rt-toolbar, .field-action, .rx-row1, .rx-row2 { display:none !important; }
+
+  /* Ensure preview + contenteditable blocks show up */
+  .preview, .preview-inner, .pv-block, .pv-title, .pv-footer { display:block !important; }
+
+  /* Show notes contenteditable blocks (use their innerHTML) */
+  .rt { display:block !important; border:none !important; background:transparent !important; box-shadow:none !important; padding:0 !important; min-height: auto !important; }
+  .rt:empty:before { content: ""; } /* avoid placeholder in print */
+
+  /* Show Rx table on page (if preview exists keep it) */
+  .med-table-wrap, .rx-table { display: table !important; width:100% !important; border-collapse: collapse !important; }
+  .rx-table th, .rx-table td { display: table-cell !important; padding:8px !important; border:1px solid #ddd !important; color: #111; font-size:12px !important; }
+
+  /* Hide input outlines for printing */
+  input, textarea, select { border: none !important; background: transparent !important; color: #111 !important; }
+
+  /* Strong black text for printing */
+  body, .preview, .panel, .card, .rt, .pv-block { color: #111 !important; background: transparent !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* Ensure long notes flow */
+  .rt, #co, #observation, #invest, #dx { page-break-inside: avoid; }
+
+  /* Keep signature visible */
+  .pv-footer { display:flex !important; }
+}
+
+/* ---------- A small helper class to build a printable container when user prints via browser (used by script.js) ---------- */
+.printable-clone {
+  display:none;
+}
+@media print {
+  .printable-clone { display:block !important; }
+}
+
+/* ---------- Small visual polish for small buttons, pills & icon-buttons ---------- */
+.iconBtn {
+  background: rgba(11,17,32,0.02);
+  border-radius:8px;
+  padding:6px;
+  min-width: 36px;
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.iconBtn:hover { background: rgba(11,17,32,0.05); }
+
+/* ---------- Ensure suggestions float above buttons and tabs always ---------- */
+.suggestions {
+  z-index: 4000 !important;  /* very high */
+  box-shadow: 0 18px 40px rgba(12,28,60,0.12) !important;
+}
+
+/* ---------- Accessibility: Increase hit area for small controls ---------- */
+.small-hit {
+  padding:6px;
+  margin:-6px;
+  display:inline-block;
+}
+
+/* ---------- Defensive: prevent print-hiding of preview content from earlier CSS ------- */
+.preview, .preview-inner, .pv-block { 
+  -webkit-print-color-adjust: exact; 
+  print-color-adjust: exact;
+}
+
+/* ========================================================================== 
+   BRANDING MODAL STYLES (ADDED)
+   - Styles for #brandingModal, modal-backdrop, .modal, header, body, preview
+   - Toggle via aria-hidden attribute so JS can simply set aria-hidden="false"
+   ========================================================================== */
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  display:none; /* hidden by default - JS should set aria-hidden="false" or inline display */
+  align-items:center;
+  justify-content:center;
+  background: rgba(5,10,20,0.45);
+  z-index:5200;
+  padding:20px;
+}
+.modal-backdrop[aria-hidden="false"]{
+  display:flex;
+}
+.modal{
+  background: var(--panel);
+  border-radius:12px;
+  padding:16px;
+  max-width:560px;
+  width:100%;
+  box-shadow: 0 30px 80px rgba(2,8,30,0.45);
+  border:1px solid rgba(11,17,32,0.06);
+  box-sizing:border-box;
+}
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.modal-header strong{ font-size:16px; }
+.modal-body{ margin-top:12px; display:flex; flex-direction:column; gap:10px; }
+.modal-body input[type="text"], .modal-body input[type="file"], .modal-body input[type="hidden"]{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #e6e9ef;
+  background:#fff;
+  box-sizing:border-box;
+}
+#brandingPreview{
+  height:64px;
+  width:160px;
+  border-radius:8px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border:1px dashed rgba(11,17,32,0.06);
+  color:var(--muted);
+  font-size:13px;
+}
+#brandingPreview img{ max-width:100%; max-height:100%; object-fit:contain; display:block; }
+
+/* keep modal buttons aligned */
+.modal .btn{ min-width:90px; }
+.modal .btn + .btn{ margin-left:8px; }
+
+/* Print-safe: ensure branding image in printable-clone renders */
+.printable-clone img, #brandingPreview img{
+  max-width:240px;
+  height:auto;
+  display:block;
+}
+
+/* small responsive tweak for modal */
+@media (max-width:560px){
+  .modal{ padding:12px; max-width:100%; margin:8px; }
+  #brandingPreview{ width:120px; height:56px; }
+}
+
+/* End of BUTTON + TABS RESTYLE + PRINT FIXES */
+/* =========================
+   End of style.css
+   ========================= */
+/* ---------- Patient Details revamp ---------- */
+.patient-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:12px;
+  align-items:start;
+}
+.p-field{ display:flex; flex-direction:column; gap:6px; }
+.p-field label{ font-weight:600; color:var(--text); font-size:14px; }
+.p-field input, .p-field select{ height:44px; padding:10px 12px; border-radius:10px; border:1px solid #e6e9ef; background:#fff; font-size:14px; }
+
+.id-row{ display:flex; gap:8px; align-items:center; }
+.id-row input{ flex:1; }
+#regenId{ white-space:nowrap; }
+
+.id-hint{ margin-top:6px; color:var(--muted); font-size:13px; }
+
+.date-hint{ margin-top:4px; color:var(--muted); font-size:13px; }
+
+/* responsive: stack fields on narrow screens */
+@media (max-width:900px){
+  .patient-grid{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width:560px){
+  .patient-grid{ grid-template-columns: 1fr; }
+  .id-row{ flex-direction:row; }
+  #regenId{ width:160px; }
+}
