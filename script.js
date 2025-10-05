@@ -95,7 +95,7 @@ let patients = JSON.parse(localStorage.getItem('fit_patients') || '[]');
 const BRANDING_KEY = 'fit_branding';
 function loadBrandingState(){ try { return JSON.parse(localStorage.getItem(BRANDING_KEY) || '{}') || {}; } catch(e){ return {}; } }
 function saveBrandingState(b){ try{ localStorage.setItem(BRANDING_KEY, JSON.stringify(b)); }catch(e){} }
-let branding = Object.assign({ clinicName: 'Fit Clinic', doctorName: 'Dr M. Yusuf Abbas MBBS, MD', contactLine: '', logoBase64: '' }, loadBrandingState());
+let branding = Object.assign({ clinicName: 'Hospital', doctorName: 'Dr Suneo Honekawa MBBS, MD', contactLine: '', logoBase64: '' }, loadBrandingState());
 
 /* medicine dataset (fallback builtin small list; optionally window.meds_10000 may exist) */
 const builtinMeds = [
@@ -1023,7 +1023,7 @@ function initActions(){
 
     const logoImg = branding && branding.logoBase64 ? `<img src="${branding.logoBase64}" alt="Clinic Logo" style="height:50px;width:auto">` : '';
     const clinicTitle = branding && branding.clinicName ? esc(branding.clinicName) : 'Fit Clinic';
-    const doctorLine = branding && branding.doctorName ? esc(branding.doctorName) : 'Dr M. Yusuf Abbas MBBS, MD';
+    const doctorLine = branding && branding.doctorName ? esc(branding.doctorName) : 'Dr Suneo Honekawa MBBS, MD';
 
     const doc = `
       <!doctype html><html><head><meta charset="utf-8"><title>Print - ${clinicTitle}</title>
@@ -1206,3 +1206,4 @@ window.__fitClinicDebug = {
   medCount: () => cart.length,
   medListPreview: () => medList.slice(0,20)
 };
+
